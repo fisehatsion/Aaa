@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>abfm Ultimate 2999 Interactive Hologram</title>
+<style>
+body{
+    margin:0;
+    background:black;
+    font-family:Orbitron, Arial;
+    text-align:center;
+    overflow:hidden;
+    color:#00ffff;
+}
+
+/* Dynamic background */
+#background{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:url('https://i.imgur.com/9QZ7K5C.png') no-repeat center center fixed;
+    background-size:cover;
+    z-index:-1;
+    transition:background 1s ease;
+}
+
+/* Hologram container */
+#holo{
+    display:inline-block;
+    position:relative;
+    margin-top:50px;
+}
+
+/* Full body */
+#body{
+    width:180px;
+    height:400px;
+    margin:auto;
+    position:relative;
+    animation:float 4s ease-in-out infinite;
+}
+
+/* Float animation */
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-20px);}
+    100%{transform:translateY(0);}
+}
+
+/* Head */
+#head{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    overflow:hidden;
+    position:relative;
+    margin:auto;
+    box-shadow:0 0 20px cyan,0 0 60px cyan;
+}
+
+/* Face images for emotions */
+#face{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+    filter: brightness(1.1) contrast(1.2);
+    transition:all 0.3s ease;
+}
+
+/* Eyes */
+.eye{
+    width:20px;
+    height:20px;
+    background:white;
+    border-radius:50%;
+    position:absolute;
+    top:50px;
+}
+#eye1{left:40px;}
+#eye2{right:40px;}
+.pupil{
+    width:10px;
+    height:10px;
+    background:black;
+    border-radius:50%;
+    margin:5px;
+    animation:eyeMove 3s infinite;
+}
+@keyframes eyeMove{
+    0%{transform:translate(0);}
+    50%{transform:translate(4px);}
+    100%{transform:translate(0);}
+}
+
+/* Mouth */
+#mouth{
+    width:40px;
+    height:8px;
+    background:white;
+    position:absolute;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:10px;
+}
+.talk{
+    animation:talk 0.2s infinite;
+}
+@keyframes talk{
+    0%{height:8px;}
+    50%{height:25px;}
+    100%{height:8px;}
+}
+
+/* Torso */
+#torso{
+    width:100px;
+    height:150px;
+    background:rgba(0,255,255,0.2);
+    margin:auto;
+    margin-top:10px;
+    border-radius:20px;
+}
+
+/* Arms */
+.arm{
+    width:20px;
+    height:100px;
+    background:rgba(0,255,255,0.2);
+    position:absolute;
+    top:160px;
+    border-radius:10px;
+}
+#armLeft{left:-25px;}
+#armRight{right:-25px;}
+
+/* Legs */
+.leg{
+    width:30px;
+    height:100px;
+    background:rgba(0,255,255,0.2);
+    position:absolute;
+    top:310px;
+    border-radius:10px;
+}
+#legLeft{left:20px;}
+#legRight{right:20px;}
+
+/* Buttons */
+button{
+    padding:15px;
+    margin:10px;
+    background:black;
+    color:cyan;
+    border:1px solid cyan;
+    font-size:16px;
+    border-radius:8px;
+}
+
+/* Chat box */
+#chat{
+    margin-top:20px;
+    font-size:16px;
+    background:rgba(0,0,0,0.4);
+    padding:10px;
+    border-radius:10px;
+    max-width:400px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:left;
+}
+
+</style>
+</head>
+<body>
+
+<div id="background"></div>
+
+<h1>abfm 2999 Interactive Hologram</h1>
+
+<div id="holo">
+    <div id="body">
+        <div id="head">
+            <img id="face" src="https://i.imgur.com/8Km9tLL.png">
+            <div class="eye" id="eye1"><div class="pupil"></div></div>
+            <div class="eye" id="eye2"><div class="pupil"></div></div>
+            <div id="mouth"></div>
+        </div>
+        <div id="torso"></div>
+        <div class="arm" id="armLeft"></div>
+        <div class="arm" id="armRight"></div>
+        <div class="leg" id="legLeft"></div>
+        <div class="leg" id="legRight"></div>
+    </div>
+</div>
+
+<!-- Upload face -->
+<input type="file" accept="image/*" onchange="changeFace(event)">
+<br>
+
+<!-- Talk button -->
+<button onclick="listen()">🎤 Talk to abfm</button>
+
+<!-- Chat display -->
+<div id="chat">abfm: Hello human, welcome to year 2999!</div>
+
+<script>
+// -------------- Face Upload ----------------
+function changeFace(event){
+    let reader=new FileReader();
+    reader.onload=function(){
+        face.src=reader.result;
+        speak("Face updated!");
+        addChat("abfm: Face updated!");
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+// -------------- AI ----------------
+function listen(){
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.start();
+    recognition.onresult = function(event){
+        let text = event.results[0][0].transcript;
+        addChat("You: "+text);
+        aiReply(text.toLowerCase());
+    }
+}
+
+function aiReply(text){
+    let reply="Hmm...";
+    let emotion="neutral";
+    text = text.toLowerCase();
+
+    if(text.includes("hello") || text.includes("hi")){
+        reply="Hello! Nice to see you!";
+        emotion="happy";
+    }
+    else if(text.includes("name")){
+        reply="I am abfm, your holographic friend!";
+        emotion="happy";
+    }
+    else if(text.includes("time")){
+        reply="The current Earth time is "+new Date().toLocaleTimeString();
+        emotion="neutral";
+    }
+    else if(text.includes("year") || text.includes("future")){
+        reply="We are in year 2999!";
+        emotion="neutral";
+    }
+    else if(text.includes("laugh")){
+        reply="Haha! That’s funny!";
+        emotion="laugh";
+    }
+    else{
+        reply="Interesting! Let me think...";
+        emotion="thinking";
+    }
+
+    changeFaceEmotion(emotion);
+    speak(reply);
+    addChat("abfm: "+reply);
+}
+
+// -------------- Voice ----------------
+function speak(text){
+    let speech=new SpeechSynthesisUtterance(text);
+    let voices = window.speechSynthesis.getVoices();
+    let femaleVoice = voices.find(v => v.name.toLowerCase().includes("female") || v.lang.includes("en")) || voices[0];
+    speech.voice=femaleVoice;
+    speech.rate=1; speech.pitch=1.4;
+    speechSynthesis.speak(speech);
+    mouth.classList.add("talk");
+    setTimeout(()=>{mouth.classList.remove("talk");},2000);
+}
+
+function addChat(text){chat.innerHTML+="<br>"+text;}
+
+// -------------- Emotion Change ----------------
+function changeFaceEmotion(emotion){
+    switch(emotion){
+        case "happy":
+            face.src="https://i.imgur.com/KzXQ8Rg.png"; // replace with happy face image
+            body.style.boxShadow="0 0 40px cyan,0 0 80px cyan";
+            break;
+        case "laugh":
+            face.src="https://i.imgur.com/3FpZ3B2.png"; // laughing face image
+            body.style.boxShadow="0 0 50px #ff69b4,0 0 100px #ff69b4";
+            break;
+        case "thinking":
+            face.src="https://i.imgur.com/0RziL9v.png"; // thinking face
+            body.style.boxShadow="0 0 20px #00ffff,0 0 40px #00ffff";
+            break;
+        default:
+            face.src="https://i.imgur.com/8Km9tLL.png"; // neutral
+            body.style.boxShadow="0 0 20px cyan,0 0 60px cyan";
+    }
+}
+
+// -------------- Body walking ----------------
+setInterval(()=>{
+    let bodyElem=document.getElementById('body');
+    bodyElem.style.transform="translateX("+ (Math.sin(Date.now()/500)*20) +"px)";
+},50);
+</script>
+
+</body>
+</html>
